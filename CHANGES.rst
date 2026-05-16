@@ -1,4 +1,9 @@
-.. current-version: 7.1.26 (managed by bump2version)
+.. current-version: 7.1.27 (managed by bump2version)
+
+Revision 7.1.27, released on May 16, 2026
+-----------------------------------------
+
+- Fixed network address parsing issue with MIB indices.
 
 Revision 7.1.26, released on Apr 26, 2026
 -----------------------------------------
