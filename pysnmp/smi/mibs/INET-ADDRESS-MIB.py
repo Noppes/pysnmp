@@ -233,11 +233,18 @@ class InetAddress(TextualConvention, OctetString):
         for parentIndex in reversed(parentIndices):
             if isinstance(parentIndex, InetAddressType):
                 try:
-                    return parentRow.setFromName(
-                        cls.typeMap[int(parentIndex)], value, impliedFlag, parentIndices
-                    )
+                    specific = cls.typeMap[int(parentIndex)]
                 except KeyError:
-                    pass
+                    continue
+
+                if not impliedFlag and specific.is_fixed_length():
+                    # InetAddress is variable-length, so the OID encoding always
+                    # has a length prefix (RFC 2578 §7.7 Rule 3). setFromName
+                    # skips that prefix for fixed-length objects, so strip it here.
+                    length = value[0]
+                    return specific.clone(tuple(value[1 : 1 + length])), value[1 + length :]
+                else:
+                    return parentRow.setFromName(specific, value, impliedFlag, parentIndices)
 
         raise error.SmiError(
             f"{cls.__name__} object encountered without preceding InetAddressType-like index: {value!r}"
@@ -247,13 +254,12 @@ class InetAddress(TextualConvention, OctetString):
         for parentIndex in reversed(parentIndices):
             if isinstance(parentIndex, InetAddressType):
                 try:
-                    return parentRow.getAsName(
-                        self.typeMap[int(parentIndex)].clone(
-                            self.asOctets().decode("ascii")
-                        ),
-                        impliedFlag,
-                        parentIndices,
-                    )
+                    typed_obj = self.typeMap[int(parentIndex)].clone(self.asOctets())
+                    # InetAddress always uses length-prefix encoding in OIDs (RFC 4001).
+                    if impliedFlag:
+                        return typed_obj.asNumbers()
+                    else:
+                        return (len(typed_obj),) + typed_obj.asNumbers()
                 except KeyError:
                     pass
 
