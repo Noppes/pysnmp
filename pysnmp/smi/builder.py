@@ -156,9 +156,19 @@ class ZipMibSource(__AbstractMibSource):
                 self.__loader = p.__loader__
                 self._srcName = self._srcName.replace(".", os.sep)
                 return self
-            elif hasattr(p, "__file__"):
-                # Dir relative to PYTHONPATH
+            elif hasattr(p, "__file__") and p.__file__ is not None:
+                # Regular package — dir is alongside __init__.py
                 return DirMibSource(os.path.split(p.__file__)[0]).init()
+            elif (
+                hasattr(p, "__spec__")
+                and p.__spec__ is not None
+                and p.__spec__.submodule_search_locations
+            ):
+                # Namespace package (no __init__.py): __file__ is None but
+                # submodule_search_locations carries the actual directory paths.
+                return DirMibSource(
+                    list(p.__spec__.submodule_search_locations)[0]
+                ).init()
             else:
                 raise error.MibLoadError(f"{p} access error")
 
