@@ -872,7 +872,7 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
                     sendPduHandle=sendPduHandle,
                 )
             else:
-                statusInformation = error.StatusInformation(sendPduHandle=sendPduHandle)
+                statusInformation = error.StatusInformation(errorIndication=errind.emptyResponse, sendPduHandle=sendPduHandle)
 
             # 7.2.11b (incomplete implementation)
 
