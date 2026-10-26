@@ -1,4 +1,23 @@
-.. current-version: 7.1.27 (managed by bump2version)
+.. current-version: 7.1.30 (managed by bump2version)
+
+Revision 7.1.30, released on Sep 28, 2026
+-----------------------------------------
+
+- Bump pyasn1 dependency to 0.6.4.
+- Bump cryptography dependency to 50.0.1.
+- Fix a few SNMP v3 warnings.
+- Fix OID traversal performance issue.
+
+Revision 7.1.29, released on Aug 20, 2026
+-----------------------------------------
+
+- Bumped cryptography dependency to 50.0.0 and above.
+- Fixed a regression where cryptography dependency is optional.
+
+Revision 7.1.28, released on Jul 31, 2026
+-----------------------------------------
+
+- Fixed a security issue in authentication parameter handling.
 
 Revision 7.1.27, released on May 16, 2026
 -----------------------------------------
